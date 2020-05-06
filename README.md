@@ -1,6 +1,6 @@
-# ref:ju'geeks Welcome 2020 – lancache setup scripts
+# ref'ju:geeks Welcome 2020 – lancache setup scripts
 
-This repository contains setup scripts for our little LAN party's [lancache](https://www.lancache.net) server.
+This repository contains setup scripts for our little LAN party's [lancache](https://lancache.net) server.
 
 ## What's here?
 
