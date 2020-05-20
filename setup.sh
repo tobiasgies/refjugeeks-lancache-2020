@@ -42,6 +42,7 @@ echo -e "${yellow}Ensuring systemd-resolved does not block port 53.${reset_color
 systemctl stop systemd-resolved
 rm /etc/resolv.conf
 cat > /etc/resolv.conf <<EOF
+nameserver 127.0.0.1
 nameserver 1.1.1.1
 nameserver 1.0.0.1
 EOF
@@ -84,6 +85,9 @@ docker run --name lancache \
     --detach \
     -v ${lancache_root}/cache:/data/cache \
     -v ${lancache_root}/logs:/data/logs \
+    -e CACHE_MEM_SIZE=2048m \
+    -e CACHE_DISK_SIZE=7340032m \
+    -e CACHE_SLICE_SIZE=2m \
     -p 80:80 \
     lancachenet/monolithic:latest
 
