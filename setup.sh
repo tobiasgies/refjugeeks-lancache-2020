@@ -27,6 +27,7 @@ apt -y install \
     htop \
     mc \
     git \
+    wondershaper \
     lib32gcc1 \
     lib32stdc++6 \
     lib32tinfo6 \
