@@ -7,6 +7,7 @@
 docker_user="refjugeeks"
 lancache_root="/lancache"
 lancache_ip="192.168.178.240"
+upstream_dns="1.1.1.1 1.0.0.1"
 
 # Abort script on error
 set -e
@@ -63,7 +64,7 @@ echo -e "${yellow}Starting docker daemon.${reset_colors}"
 systemctl enable --now docker
 
 echo -e "${yellow}Creating lancache data directories.${reset_colors}"
-mkdir -p ${lancache_root}/{cache,logs,autofill}
+mkdir -p ${lancache_root}/{cache,logs,autofill,steam-tmp}
 
 if [[ ! -d ${lancache_root}/autofill/.git ]]; then
     echo -e "${yellow}Cloning lancache-autofill to ${green}${lancache_root}/autofill${yellow}.${reset_colors}"
@@ -79,6 +80,7 @@ docker run --name lancache-dns \
     -p 53:53/udp \
     -e USE_GENERIC_CACHE=true \
     -e LANCACHE_IP=${lancache_ip} \
+    -e UPSTREAM_DNS=${upstream_dns} \
     lancachenet/lancache-dns:latest
 
 docker run --name lancache \
@@ -89,12 +91,14 @@ docker run --name lancache \
     -e CACHE_MEM_SIZE=2048m \
     -e CACHE_DISK_SIZE=7340032m \
     -e CACHE_SLICE_SIZE=2m \
+    -e UPSTREAM_DNS=${upstream_dns} \
     -p 80:80 \
     lancachenet/monolithic:latest
 
 docker run --name lancache-sniproxy \
     --restart always \
     --detach \
+    -e UPSTREAM_DNS=${upstream_dns} \
     -p 443:443 \
     lancachenet/sniproxy:latest
 
