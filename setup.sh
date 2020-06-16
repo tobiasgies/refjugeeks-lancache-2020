@@ -7,7 +7,7 @@
 docker_user="refjugeeks"
 lancache_root="/lancache"
 lancache_ip="192.168.178.240"
-upstream_dns="1.1.1.1 1.0.0.1"
+upstream_dns="1.1.1.1;1.0.0.1"
 
 # Abort script on error
 set -e
@@ -80,7 +80,7 @@ docker run --name lancache-dns \
     -p 53:53/udp \
     -e USE_GENERIC_CACHE=true \
     -e LANCACHE_IP=${lancache_ip} \
-    -e UPSTREAM_DNS=${upstream_dns} \
+    -e UPSTREAM_DNS="${upstream_dns}" \
     lancachenet/lancache-dns:latest
 
 docker run --name lancache \
@@ -91,14 +91,14 @@ docker run --name lancache \
     -e CACHE_MEM_SIZE=2048m \
     -e CACHE_DISK_SIZE=7340032m \
     -e CACHE_SLICE_SIZE=2m \
-    -e UPSTREAM_DNS=${upstream_dns} \
+    -e UPSTREAM_DNS="${upstream_dns}" \
     -p 80:80 \
     lancachenet/monolithic:latest
 
 docker run --name lancache-sniproxy \
     --restart always \
     --detach \
-    -e UPSTREAM_DNS=${upstream_dns} \
+    -e UPSTREAM_DNS="${upstream_dns}" \
     -p 443:443 \
     lancachenet/sniproxy:latest
 
