@@ -37,6 +37,7 @@ apt -y install \
     php7.4-mbstring \
     php7.4-sqlite3 \
     php7.4-bcmath \
+    php7.4-xml \
     composer \
     expect
 
@@ -59,6 +60,9 @@ apt -y install \
 
 echo -e "${yellow}Giving user ${green}${docker_user}${yellow} the rights to interact with docker.${reset_colors}"
 usermod -aG docker ${docker_user}
+
+echo -e "${yellow}Adding user ${green}${docker_user}${yellow} to sudoers file.${reset_colors}"
+echo "${docker_user} ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/${docker_user}
 
 echo -e "${yellow}Starting docker daemon.${reset_colors}"
 systemctl enable --now docker
