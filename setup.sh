@@ -93,7 +93,7 @@ docker run --name lancache \
     -v ${lancache_root}/cache:/data/cache \
     -v ${lancache_root}/logs:/data/logs \
     -e CACHE_MEM_SIZE=2048m \
-    -e CACHE_DISK_SIZE=7340032m \
+    -e CACHE_DISK_SIZE=15728640m \
     -e CACHE_SLICE_SIZE=2m \
     -e UPSTREAM_DNS="${upstream_dns}" \
     -p 80:80 \
