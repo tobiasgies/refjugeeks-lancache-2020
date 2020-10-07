@@ -26,9 +26,12 @@ apt -y install \
     zip \
     unzip \
     htop \
+    iotop \
+    iftop \
     mc \
     git \
     screen \
+    net-tools \
     wondershaper \
     lib32gcc1 \
     lib32stdc++6 \
