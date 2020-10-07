@@ -6,7 +6,7 @@
 # Configure this
 docker_user="refjugeeks"
 lancache_root="/lancache"
-lancache_ip="192.168.178.240"
+lancache_ip="192.168.178.5"
 upstream_dns="1.1.1.1;1.0.0.1"
 
 # Abort script on error
@@ -28,6 +28,7 @@ apt -y install \
     htop \
     mc \
     git \
+    screen \
     wondershaper \
     lib32gcc1 \
     lib32stdc++6 \
