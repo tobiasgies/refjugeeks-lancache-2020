@@ -33,6 +33,7 @@ apt -y install \
     screen \
     net-tools \
     wondershaper \
+    smartmontools \
     lib32gcc1 \
     lib32stdc++6 \
     lib32tinfo6 \
