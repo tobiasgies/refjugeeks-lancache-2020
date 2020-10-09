@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Abort script on error
-set -e
+# Abort script on error or unset variable
+set -euo pipefail
 
 # Fancy colors for better readability of output
 reset_colors="\033[0m"
