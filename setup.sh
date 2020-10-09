@@ -10,7 +10,7 @@ lancache_ip="192.168.178.5"
 upstream_dns="1.1.1.1;1.0.0.1"
 
 # Abort script on error or undefined variable
-set -eu
+set -euo pipefail
 
 # Fancy colors for better readability of output
 reset_colors="\033[0m"
