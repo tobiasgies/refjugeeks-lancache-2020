@@ -33,6 +33,7 @@ apt -y install \
     screen \
     net-tools \
     ethtool \
+    ifenslave \
     wondershaper \
     smartmontools \
     lib32gcc1 \
