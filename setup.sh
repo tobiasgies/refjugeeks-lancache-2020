@@ -32,6 +32,7 @@ apt -y install \
     git \
     screen \
     net-tools \
+    ethtool \
     wondershaper \
     smartmontools \
     lib32gcc1 \
