@@ -85,6 +85,7 @@ else
 fi
 
 echo -e "${yellow}Starting lancache docker containers and ensuring they restart on boot.${reset_colors}"
+docker pull lancachenet/lancache-dns:latest
 docker run --name lancache-dns \
     --restart always \
     --detach \
@@ -94,6 +95,7 @@ docker run --name lancache-dns \
     -e UPSTREAM_DNS="${upstream_dns}" \
     lancachenet/lancache-dns:latest
 
+docker pull lancachenet/monolithic:latest
 docker run --name lancache \
     --restart always \
     --detach \
@@ -104,14 +106,8 @@ docker run --name lancache \
     -e CACHE_SLICE_SIZE=2m \
     -e UPSTREAM_DNS="${upstream_dns}" \
     -p 80:80 \
-    lancachenet/monolithic:latest
-
-docker run --name lancache-sniproxy \
-    --restart always \
-    --detach \
-    -e UPSTREAM_DNS="${upstream_dns}" \
     -p 443:443 \
-    lancachenet/sniproxy:latest
+    lancachenet/monolithic:latest
 
 echo -e "${yellow}lancache has been started. Please configure ${green}${lancache_ip}${yellow} as DNS server.${reset_colors}"
 echo -e "${yellow}For lancache-autofill, please follow the readme: ${green}https://github.com/zeropingheroes/lancache-autofill/blob/master/README.md${reset_colors}"
