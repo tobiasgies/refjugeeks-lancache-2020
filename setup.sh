@@ -6,7 +6,7 @@
 # Configure this
 docker_user="refjugeeks"
 lancache_root="/lancache"
-lancache_ip="192.168.0.5"
+lancache_ip="192.168.178.6"
 upstream_dns="8.8.8.8;8.8.4.4"
 
 # Abort script on error or undefined variable
@@ -78,11 +78,18 @@ systemctl enable --now docker
 echo -e "${yellow}Creating lancache data directories.${reset_colors}"
 mkdir -p ${lancache_root}/{cache,logs,prefill,steam-tmp}
 
-echo -e "${yellow}Downloading steam-lancache-prefill.${reset_colors}"
+echo -e "${yellow}Downloading lancache-prefill tools.${reset_colors}"
 curl -L "https://github.com/tpill90/steam-lancache-prefill/releases/download/v1.5.2/SteamPrefill-1.5.2-linux-x64.zip" -o ${lancache_root}/prefill/SteamPrefill.zip
-unzip ${lancache_root}/prefill/SteamPrefill.zip -j -d ${lancache_root}/prefill
-rm ${lancache_root}/prefill/SteamPrefill.zip
-chmod +x ${lancache_root}/prefill/SteamPrefill
+curl -L "https://github.com/tpill90/battlenet-lancache-prefill/releases/download/v1.4.1/BattleNetPrefill-1.4.1-linux-x64.zip" -o ${lancache_root}/prefill/BattleNetPrefill.zip
+
+# Disable exit on error because unzip returns 1 on warning. :-(
+set +e
+unzip -j -o ${lancache_root}/prefill/SteamPrefill.zip -d ${lancache_root}/prefill
+unzip -j -o ${lancache_root}/prefill/BattleNetPrefill.zip -d ${lancache_root}/prefill
+set -e
+
+rm ${lancache_root}/prefill/{SteamPrefill,BattleNetPrefill}.zip
+chmod +x ${lancache_root}/prefill/{SteamPrefill,BattleNetPrefill}
 
 echo -e "${yellow}Starting lancache docker containers and ensuring they restart on boot.${reset_colors}"
 docker pull lancachenet/lancache-dns:latest
