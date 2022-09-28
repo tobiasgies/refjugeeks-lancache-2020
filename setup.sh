@@ -6,8 +6,8 @@
 # Configure this
 docker_user="refjugeeks"
 lancache_root="/lancache"
-lancache_ip="192.168.178.5"
-upstream_dns="1.1.1.1;1.0.0.1"
+lancache_ip="192.168.0.5"
+upstream_dns="8.8.8.8;8.8.4.4"
 
 # Abort script on error or undefined variable
 set -euo pipefail
@@ -46,7 +46,8 @@ apt -y install \
     php7.4-bcmath \
     php7.4-xml \
     composer \
-    expect
+    expect \
+    curl
 
 echo -e "${yellow}Ensuring systemd-resolved does not block port 53.${reset_colors}"
 systemctl stop systemd-resolved
@@ -75,14 +76,13 @@ echo -e "${yellow}Starting docker daemon.${reset_colors}"
 systemctl enable --now docker
 
 echo -e "${yellow}Creating lancache data directories.${reset_colors}"
-mkdir -p ${lancache_root}/{cache,logs,autofill,steam-tmp}
+mkdir -p ${lancache_root}/{cache,logs,prefill,steam-tmp}
 
-if [[ ! -d ${lancache_root}/autofill/.git ]]; then
-    echo -e "${yellow}Cloning lancache-autofill to ${green}${lancache_root}/autofill${yellow}.${reset_colors}"
-    git clone https://github.com/zeropingheroes/lancache-autofill.git ${lancache_root}/autofill
-else
-    echo -e "${yellow}lancache-autofill repo already cloned to ${green}${lancache_root}/autofill${yellow}, skipping.${reset_colors}"
-fi
+echo -e "${yellow}Downloading steam-lancache-prefill.${reset_colors}"
+curl -L "https://github.com/tpill90/steam-lancache-prefill/releases/download/v1.5.2/SteamPrefill-1.5.2-linux-x64.zip" -o ${lancache_root}/prefill/SteamPrefill.zip
+unzip ${lancache_root}/prefill/SteamPrefill.zip -j -d ${lancache_root}/prefill
+rm ${lancache_root}/prefill/SteamPrefill.zip
+chmod +x ${lancache_root}/prefill/SteamPrefill
 
 echo -e "${yellow}Starting lancache docker containers and ensuring they restart on boot.${reset_colors}"
 docker pull lancachenet/lancache-dns:latest
