@@ -79,7 +79,7 @@ echo -e "${yellow}Creating lancache data directories.${reset_colors}"
 mkdir -p ${lancache_root}/{cache,logs,prefill,steam-tmp}
 
 echo -e "${yellow}Downloading lancache-prefill tools.${reset_colors}"
-curl -L "https://github.com/tpill90/steam-lancache-prefill/releases/download/v1.5.2/SteamPrefill-1.5.2-linux-x64.zip" -o ${lancache_root}/prefill/SteamPrefill.zip
+curl -L "https://github.com/tpill90/steam-lancache-prefill/releases/download/v1.5.3/SteamPrefill-1.5.3-linux-x64.zip" -o ${lancache_root}/prefill/SteamPrefill.zip
 curl -L "https://github.com/tpill90/battlenet-lancache-prefill/releases/download/v1.4.1/BattleNetPrefill-1.4.1-linux-x64.zip" -o ${lancache_root}/prefill/BattleNetPrefill.zip
 
 # Disable exit on error because unzip returns 1 on warning. :-(
