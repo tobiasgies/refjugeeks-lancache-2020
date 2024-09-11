@@ -36,15 +36,15 @@ apt -y install \
     ifenslave \
     wondershaper \
     smartmontools \
-    lib32gcc1 \
-    lib32stdc++6 \
+    lib32gcc-12-dev \
+    lib32stdc++-12-dev \
     lib32tinfo6 \
     lib32ncurses6 \
-    php7.4-cli \
-    php7.4-mbstring \
-    php7.4-sqlite3 \
-    php7.4-bcmath \
-    php7.4-xml \
+    php8.2-cli \
+    php8.2-mbstring \
+    php8.2-sqlite3 \
+    php8.2-bcmath \
+    php8.2-xml \
     composer \
     expect \
     curl
@@ -79,17 +79,19 @@ echo -e "${yellow}Creating lancache data directories.${reset_colors}"
 mkdir -p ${lancache_root}/{cache,logs,prefill,steam-tmp}
 
 echo -e "${yellow}Downloading lancache-prefill tools.${reset_colors}"
-curl -L "https://github.com/tpill90/steam-lancache-prefill/releases/download/v1.5.3/SteamPrefill-1.5.3-linux-x64.zip" -o ${lancache_root}/prefill/SteamPrefill.zip
-curl -L "https://github.com/tpill90/battlenet-lancache-prefill/releases/download/v1.4.1/BattleNetPrefill-1.4.1-linux-x64.zip" -o ${lancache_root}/prefill/BattleNetPrefill.zip
+curl -L "https://github.com/tpill90/steam-lancache-prefill/releases/download/v2.7.0/SteamPrefill-2.7.0-linux-x64.zip" -o ${lancache_root}/prefill/SteamPrefill.zip
+curl -L "https://github.com/tpill90/battlenet-lancache-prefill/releases/download/v2.0.0/BattleNetPrefill-2.0.0-linux-x64.zip" -o ${lancache_root}/prefill/BattleNetPrefill.zip
+curl -L "https://github.com/tpill90/epic-lancache-prefill/releases/download/v2.1.0/EpicPrefill-2.1.0-linux-x64.zip" -o ${lancache_root}/prefill/EpicPrefill.zip
 
 # Disable exit on error because unzip returns 1 on warning. :-(
 set +e
 unzip -j -o ${lancache_root}/prefill/SteamPrefill.zip -d ${lancache_root}/prefill
 unzip -j -o ${lancache_root}/prefill/BattleNetPrefill.zip -d ${lancache_root}/prefill
+unzip -j -o ${lancache_root}/prefill/EpicPrefill.zip -d ${lancache_root}/prefill
 set -e
 
-rm ${lancache_root}/prefill/{SteamPrefill,BattleNetPrefill}.zip
-chmod +x ${lancache_root}/prefill/{SteamPrefill,BattleNetPrefill}
+rm ${lancache_root}/prefill/{SteamPrefill,BattleNetPrefill,EpicPrefill}.zip
+chmod +x ${lancache_root}/prefill/{SteamPrefill,BattleNetPrefill,EpicPrefill}
 
 echo -e "${yellow}Starting lancache docker containers and ensuring they restart on boot.${reset_colors}"
 docker pull lancachenet/lancache-dns:latest
@@ -109,7 +111,7 @@ docker run --name lancache \
     -v ${lancache_root}/cache:/data/cache \
     -v ${lancache_root}/logs:/data/logs \
     -e CACHE_MEM_SIZE=2048m \
-    -e CACHE_DISK_SIZE=15728640m \
+    -e CACHE_DISK_SIZE=8388608m \
     -e CACHE_SLICE_SIZE=2m \
     -e UPSTREAM_DNS="${upstream_dns}" \
     -p 80:80 \
@@ -117,4 +119,7 @@ docker run --name lancache \
     lancachenet/monolithic:latest
 
 echo -e "${yellow}lancache has been started. Please configure ${green}${lancache_ip}${yellow} as DNS server.${reset_colors}"
-echo -e "${yellow}For lancache-autofill, please follow the readme: ${green}https://github.com/zeropingheroes/lancache-autofill/blob/master/README.md${reset_colors}"
+echo -e "${yellow}For usage of the lancache prefill tools, please follow the readme files:${reset_colors}
+echo -e "${yellow} - ${green}https://github.com/tpill90/steam-lancache-prefill/blob/master/README.md${reset_colors}"
+echo -e "${yellow} - ${green}https://github.com/tpill90/battlenet-lancache-prefill/blob/master/README.md${reset_colors}"
+echo -e "${yellow} - ${green}https://github.com/tpill90/epic-lancache-prefill/blob/master/README.md${reset_colors}"
