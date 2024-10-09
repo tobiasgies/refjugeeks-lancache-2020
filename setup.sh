@@ -6,8 +6,8 @@
 # Configure this
 docker_user="refjugeeks"
 lancache_root="/lancache"
-lancache_ip="192.168.178.6"
-upstream_dns="8.8.8.8;8.8.4.4"
+lancache_ip="192.168.10.5"
+upstream_dns="1.1.1.1;9.9.9.9"
 
 # Abort script on error or undefined variable
 set -euo pipefail
