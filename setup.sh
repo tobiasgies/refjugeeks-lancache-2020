@@ -127,7 +127,7 @@ docker run --name lancache \
     lancachenet/monolithic:latest
 
 echo -e "${yellow}lancache has been started. Please configure ${green}${lancache_ip}${yellow} as DNS server.${reset_colors}"
-echo -e "${yellow}For usage of the lancache prefill tools, please follow the readme files:${reset_colors}
+echo -e "${yellow}For usage of the lancache prefill tools, please follow the readme files:${reset_colors}"
 echo -e "${yellow} - ${green}https://github.com/tpill90/steam-lancache-prefill/blob/master/README.md${reset_colors}"
 echo -e "${yellow} - ${green}https://github.com/tpill90/battlenet-lancache-prefill/blob/master/README.md${reset_colors}"
 echo -e "${yellow} - ${green}https://github.com/tpill90/epic-lancache-prefill/blob/master/README.md${reset_colors}"
