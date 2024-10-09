@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Setup script for lancache (https://www.lancache.net).
-# This script is tested and meant to work on a bare-bones Ubuntu 20.04 install.
+# This script is tested and meant to work on a bare-bones Debian 12 (Bookworm) install.
 
 # Configure this
 docker_user="refjugeeks"
