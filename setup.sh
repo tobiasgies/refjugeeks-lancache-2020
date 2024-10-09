@@ -56,7 +56,12 @@ apt -y install \
     curl
 
 echo -e "${yellow}Ensuring systemd-resolved does not block port 53.${reset_colors}"
-systemctl stop systemd-resolved
+if systemctl is-active --quiet systemd-resolved.service; then
+    systemctl stop systemd-resolved
+    sed -i -E -e 's/#?DNSStubListener=yes/DNSStubListener=no/' \
+        /etc/systemd/resolved.conf
+    systemctl start systemd-resolved
+fi   
 rm /etc/resolv.conf
 cat > /etc/resolv.conf <<EOF
 nameserver 127.0.0.1
@@ -64,10 +69,6 @@ nameserver 1.1.1.1
 nameserver 9.9.9.9
 nameserver 192.168.10.1
 EOF
-sed -i -E -e 's/#?DNSStubListener=yes/DNSStubListener=no/' \
-    /etc/systemd/resolved.conf
-systemctl start systemd-resolved
-
 echo -e "${yellow}Installing docker runtime.${reset_colors}"
 apt -y install \
     docker.io \
