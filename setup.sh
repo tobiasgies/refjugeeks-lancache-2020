@@ -53,7 +53,9 @@ apt -y install \
     php8.2-xml \
     composer \
     expect \
-    curl
+    curl \
+    ca-certificates \
+    apt-transport-https
 
 echo -e "${yellow}Ensuring systemd-resolved does not block port 53.${reset_colors}"
 if systemctl is-active --quiet systemd-resolved.service; then
@@ -70,9 +72,21 @@ nameserver 9.9.9.9
 nameserver 192.168.10.1
 EOF
 echo -e "${yellow}Installing docker runtime.${reset_colors}"
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt update
 apt -y install \
-    docker.io \
-    docker-compose
+    docker-ce \
+    docker-ce-cli \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-compose-plugin
 
 echo -e "${yellow}Giving user ${green}${docker_user}${yellow} the rights to interact with docker.${reset_colors}"
 usermod -aG docker ${docker_user}
