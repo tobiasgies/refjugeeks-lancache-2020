@@ -27,36 +27,6 @@ echo -e "${yellow}Installing any outstanding OS updates.${reset_colors}"
 apt update && \
     apt -y dist-upgrade
 
-echo -e "${yellow}Installing some basic software and prerequisites for lancache-autofill.${reset_colors}"
-apt -y install \
-    zip \
-    unzip \
-    htop \
-    iotop \
-    iftop \
-    mc \
-    git \
-    screen \
-    net-tools \
-    ethtool \
-    ifenslave \
-    wondershaper \
-    smartmontools \
-    lib32gcc-12-dev \
-    lib32stdc++-12-dev \
-    lib32tinfo6 \
-    lib32ncurses6 \
-    php8.2-cli \
-    php8.2-mbstring \
-    php8.2-sqlite3 \
-    php8.2-bcmath \
-    php8.2-xml \
-    composer \
-    expect \
-    curl \
-    ca-certificates \
-    apt-transport-https
-
 echo -e "${yellow}Ensuring systemd-resolved does not block port 53.${reset_colors}"
 if systemctl is-active --quiet systemd-resolved.service; then
     systemctl stop systemd-resolved
@@ -71,6 +41,23 @@ nameserver 1.1.1.1
 nameserver 9.9.9.9
 nameserver 192.168.10.1
 EOF
+
+echo -e "${yellow}Installing some basic software and prerequisites for lancache-autofill.${reset_colors}"
+apt -y install \
+    zip \
+    unzip \
+    htop \
+    iotop \
+    iftop \
+    mc \
+    git \
+    screen \
+    net-tools \
+    smartmontools \
+    curl \
+    ca-certificates \
+    apt-transport-https
+
 echo -e "${yellow}Installing docker runtime.${reset_colors}"
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
@@ -98,22 +85,23 @@ echo -e "${yellow}Starting docker daemon.${reset_colors}"
 systemctl enable --now docker
 
 echo -e "${yellow}Creating lancache data directories.${reset_colors}"
-mkdir -p ${lancache_root}/{cache,logs,prefill,steam-tmp}
+mkdir -p ${lancache_root}/{cache,logs,prefill/{epic,steam,bnet},steam-tmp}
 
 echo -e "${yellow}Downloading lancache-prefill tools.${reset_colors}"
-curl -L "https://github.com/tpill90/steam-lancache-prefill/releases/download/v2.7.0/SteamPrefill-2.7.0-linux-x64.zip" -o ${lancache_root}/prefill/SteamPrefill.zip
+curl -L "https://github.com/tpill90/steam-lancache-prefill/releases/download/v2.8.0/SteamPrefill-2.8.0-linux-x64.zip" -o ${lancache_root}/prefill/SteamPrefill.zip
 curl -L "https://github.com/tpill90/battlenet-lancache-prefill/releases/download/v2.0.0/BattleNetPrefill-2.0.0-linux-x64.zip" -o ${lancache_root}/prefill/BattleNetPrefill.zip
 curl -L "https://github.com/tpill90/epic-lancache-prefill/releases/download/v2.1.0/EpicPrefill-2.1.0-linux-x64.zip" -o ${lancache_root}/prefill/EpicPrefill.zip
 
 # Disable exit on error because unzip returns 1 on warning. :-(
 set +e
-unzip -j -o ${lancache_root}/prefill/SteamPrefill.zip -d ${lancache_root}/prefill
-unzip -j -o ${lancache_root}/prefill/BattleNetPrefill.zip -d ${lancache_root}/prefill
-unzip -j -o ${lancache_root}/prefill/EpicPrefill.zip -d ${lancache_root}/prefill
+unzip -j -o ${lancache_root}/prefill/SteamPrefill.zip -d ${lancache_root}/prefill/steam
+unzip -j -o ${lancache_root}/prefill/BattleNetPrefill.zip -d ${lancache_root}/prefill/bnet
+unzip -j -o ${lancache_root}/prefill/EpicPrefill.zip -d ${lancache_root}/prefill/epic
 set -e
 
 rm ${lancache_root}/prefill/{SteamPrefill,BattleNetPrefill,EpicPrefill}.zip
-chmod +x ${lancache_root}/prefill/{SteamPrefill,BattleNetPrefill,EpicPrefill}
+chmod +x ${lancache_root}/prefill/{steam/{SteamPrefill,update.sh},bnet/{BattleNetPrefill,update.sh},epic/{EpicPrefill,update.sh}}
+chown -R ${docker_user}:${docker_user} ${lancache_root}/prefill
 
 echo -e "${yellow}Starting lancache docker containers and ensuring they restart on boot.${reset_colors}"
 docker pull lancachenet/lancache-dns:latest
