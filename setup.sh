@@ -13,9 +13,15 @@ upstream_dns="1.1.1.1;9.9.9.9"
 set -euo pipefail
 
 # Fancy colors for better readability of output
-reset_colors="\033[0m"
-yellow="\033[0;33m"
-green="\033[0;32m"
+reset_colors="\e[0m"
+yellow="\e[0;33m"
+green="\e[0;32m"
+red="\e[0;31m"
+
+if [ $EUID != "0" ]; then
+    echo -e "${red}ERROR: must be root to execute this script.${reset_colors}">&2
+    exit 1
+fi
 
 echo -e "${yellow}Installing any outstanding OS updates.${reset_colors}"
 apt update && \
