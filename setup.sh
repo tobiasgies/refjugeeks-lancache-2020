@@ -55,6 +55,7 @@ apt -y install \
     net-tools \
     smartmontools \
     curl \
+    jq \
     ca-certificates \
     apt-transport-https
 
