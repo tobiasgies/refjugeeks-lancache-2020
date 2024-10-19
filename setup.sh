@@ -30,7 +30,7 @@ apt update && \
 echo -e "${yellow}Ensuring systemd-resolved does not block port 53.${reset_colors}"
 if systemctl is-active --quiet systemd-resolved.service; then
     systemctl stop systemd-resolved
-    sed -i -E -e 's/#?DNSStubListener=yes/DNSStubListener=no/' \
+    sed -i -E -e 's/#?\s*DNSStubListener=yes/DNSStubListener=no/' \
         /etc/systemd/resolved.conf
     systemctl start systemd-resolved
 fi   
@@ -44,6 +44,7 @@ EOF
 
 echo -e "${yellow}Installing some basic software and prerequisites for lancache-autofill.${reset_colors}"
 apt -y install \
+    sudo \
     zip \
     unzip \
     htop \
