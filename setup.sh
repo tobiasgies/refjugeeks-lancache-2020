@@ -23,6 +23,18 @@ if [ $EUID != "0" ]; then
     exit 1
 fi
 
+pull_and_stop_container() {
+    image="${1:?"${red}container image parameter not set${reset_colors}"}"
+    container="${2:?"${red}container name parameter not set${reset_colors}"}"
+    echo -e "${yellow}Pulling latest ${green}${image}${yellow} image.${reset_colors}"
+    docker pull "${image}:latest"
+    if [ -n "$(docker ps -q -a -f "name=^${container}$")" ]; then
+        echo -e "${green}${container}${yellow} container exists, stopping and removing.${reset_colors}"
+        docker stop "${container}"
+        docker rm -f "${container}" 
+    fi
+}
+
 echo -e "${yellow}Installing any outstanding OS updates.${reset_colors}"
 apt update && \
     apt -y dist-upgrade
@@ -106,9 +118,10 @@ chmod +x ${lancache_root}/prefill/{steam/{SteamPrefill,update.sh},bnet/{BattleNe
 chown -R ${docker_user}:${docker_user} ${lancache_root}/prefill
 
 echo -e "${yellow}Starting lancache docker containers and ensuring they restart on boot.${reset_colors}"
-docker pull lancachenet/lancache-dns:latest
+pull_and_stop_container "lancachenet/lancache-dns" "lancache-dns"
+echo -e "${yellow}Starting latest ${green}lancache-dns${yellow} container.${reset_colors}"
 docker run --name lancache-dns \
-    --restart always \
+    --restart unless-stopped \
     --detach \
     -p 53:53/udp \
     -e USE_GENERIC_CACHE=true \
@@ -116,9 +129,10 @@ docker run --name lancache-dns \
     -e UPSTREAM_DNS="${upstream_dns}" \
     lancachenet/lancache-dns:latest
 
-docker pull lancachenet/monolithic:latest
+pull_and_stop_container "lancachenet/monolithic" "lancache"
+echo -e "${yellow}Starting latest ${green}lancache${yellow} container.${reset_colors}"
 docker run --name lancache \
-    --restart always \
+    --restart unless-stopped \
     --detach \
     -v ${lancache_root}/cache:/data/cache \
     -v ${lancache_root}/logs:/data/logs \
