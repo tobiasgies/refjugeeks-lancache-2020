@@ -105,6 +105,17 @@ apt update
 rm zabbix-release_latest+debian12_all.deb
 apt -y install zabbix-agent2
 
+echo -e "${yellow}Adding zabbix agent config file.${reset_colors}"
+cat > /etc/zabbix/zabbix_agent2.d/99-refjugeeks.conf <<EOF
+LogFileSize=10
+Server=127.0.0.1,192.168.10.10
+ListenPort=10050
+StatusPort=10049
+ServerActive=
+Hostname=
+HostnameItem=system.hostname[fqdn]
+EOF
+
 echo -e "${yellow}Starting zabbix agent.${reset_colors}"
 systemctl enable --now zabbix-agent2
 
