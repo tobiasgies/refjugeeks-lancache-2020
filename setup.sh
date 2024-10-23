@@ -98,6 +98,16 @@ echo "${docker_user} ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/${docker_user
 echo -e "${yellow}Starting docker daemon.${reset_colors}"
 systemctl enable --now docker
 
+echo -e "${yellow}Installing zabbix agent.${reset_colors}"
+wget https://repo.zabbix.com/zabbix/7.0/debian/pool/main/z/zabbix-release/zabbix-release_latest+debian12_all.deb
+dpkg -i zabbix-release_latest+debian12_all.deb
+apt update
+rm zabbix-release_latest+debian12_all.deb
+apt -y install zabbix-agent2
+
+echo -e "${yellow}Starting zabbix agent.${reset_colors}"
+systemctl enable --now zabbix-agent2
+
 echo -e "${yellow}Creating lancache data directories.${reset_colors}"
 mkdir -p ${lancache_root}/{cache,logs,prefill/{epic,steam,bnet},steam-tmp}
 
@@ -143,6 +153,9 @@ docker run --name lancache \
     -p 80:80 \
     -p 443:443 \
     lancachenet/monolithic:latest
+
+echo -e "${yellow}Removing old and dangling docker images and volumes.${reset_colors}"
+docker system prune --all --volumes --force
 
 echo -e "${yellow}lancache has been started. Please configure ${green}${lancache_ip}${yellow} as DNS server.${reset_colors}"
 echo -e "${yellow}For usage of the lancache prefill tools, please follow the readme files:${reset_colors}"
